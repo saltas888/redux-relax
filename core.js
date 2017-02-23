@@ -71,9 +71,9 @@ export const getActions = ()=> Data.configs.entities.reduce((prev,curr, index)=>
   return {
     ...prev,
     [curr.name]: {
-      request: query => Utils.action(getActionTypes()[entityName].REQUEST, {query}),
-      success:  (response, query) => Utils.action(getActionTypes()[entityName].SUCCESS, {response, query}),
-      failure:  (error, query) => Utils.action(getActionTypes()[entityName].FAILURE,  {error, query}),
+      request: query => Utils.action(getActionTypes()[entityName].REQUEST, {[curr.paginationKey || 'query']:query}),
+      success:  (response, query) => Utils.action(getActionTypes()[entityName].SUCCESS, {response, [curr.paginationKey || 'query']:query}),
+      failure:  (error, query) => Utils.action(getActionTypes()[entityName].FAILURE,  {error, [curr.paginationKey || 'query']:query}),
     }
   }
 },{})
@@ -149,14 +149,14 @@ export const getLoadEntityFunctions = ()=> Data.configs.entities.reduce((prev,cu
     [curr.name]:{
       [`watchLoad${entityFunctionOffest}`]:function*() {
         while(true) {
-          const { query } =  yield take(`LOAD_${curr.name.toUpperCase()}`)
-          yield fork(loadEntityBaseFunc, query);
+          const data =  yield take(`LOAD_${curr.name.toUpperCase()}`)
+          yield fork(loadEntityBaseFunc, data[curr.paginationKey || 'query']);
         }
       },
       [`watchLoadMore${entityFunctionOffest}`]:function*() {
         while(true) {
-          const { query } =  yield take(`LOAD_MORE_${curr.name.toUpperCase()}`)
-          yield fork(loadEntityBaseFunc, query, true);
+          const data =  yield take(`LOAD_MORE_${curr.name.toUpperCase()}`)
+          yield fork(loadEntityBaseFunc, data[curr.paginationKey || 'query'], true);
         }
       },
       [`load${entityFunctionOffest}`]: loadEntityBaseFunc
@@ -181,16 +181,3 @@ export const getLoadEntitysAction = entityName => {
   return getLoadEntityFunctions()[entityName][`load${entityFunctionOffest}`]
 }
 
-// function* loadProducts(query, loadMore) {
-//   const products = yield select(selectors.getProductsBySorting, query)
-//   const hasToLoadMore =  products && (products.pageCount < products.totalPages)
-//   if (!products  || (loadMore && hasToLoadMore) ){
-//     if(!products){
-//       yield call(fetchProducts, `/api/v1/products${query}`, query)  
-//     }
-//     else {
-//       const pageCount = products.pageCount
-//       yield call(fetchProducts, `/api/v1/products${query}&page=${pageCount + 1}`, query)
-//     }
-//   }
-// }

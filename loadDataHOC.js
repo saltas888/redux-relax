@@ -17,7 +17,7 @@ export default (entity, dataRetriever) => {
       }
 
       componentWillMount() {
-        this.props[`load${Utils.capitalize(entity)}`](dataRetriever(this.props.state).search)
+        this.props[`load${Utils.capitalize(entity)}`](dataRetriever(this.props.state).search || 'default')
       }
 
       render() {
@@ -34,7 +34,7 @@ export default (entity, dataRetriever) => {
 
     function mapStateToProps(state) {
       const entities = get(state,`entities.${entity}`)
-      const entityPaginationData = get(state,`pagination.${entity}.${dataRetriever(state).search}`) || { ids: [] }
+      const entityPaginationData = get(state,`pagination.${entity}.${dataRetriever(state).search || 'default'}`) || { ids: [] }
       const data = entityPaginationData.ids.map(id => entities[id])
       return {
         state,
