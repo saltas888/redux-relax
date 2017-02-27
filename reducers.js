@@ -1,7 +1,9 @@
 import updeep from 'updeep'
+import isFunction from 'lodash/isFunction'
 import { combineReducers } from 'redux'
 import paginate from './paginate'
 import { getActionTypes } from './core'
+import Data from './data'
 
 export default (entitiesData) =>{
   const entitiesState = entitiesData.reduce((prev,entity)=>{
@@ -21,7 +23,6 @@ export default (entitiesData) =>{
   const pagination = combineReducers({
     ...entitiesData.reduce((prev,entity)=>{
       const Action = getActionTypes()[entity.name.toUpperCase()]
-      // console.log(Action)
       return {
         ...prev,
         [entity.name]: paginate({

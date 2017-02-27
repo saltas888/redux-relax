@@ -6,6 +6,7 @@ import get from 'lodash/get'
 import { takeEvery, takeLatest } from 'redux-saga'
 import {reset} from 'redux-form';
 import { take, put, call, fork, select } from 'redux-saga/effects'
+const inflect = require('i')();
 
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
@@ -59,7 +60,8 @@ function* apiCallForEntity(entity, apiFn, url, data) {
 export const getActionTypes = ()=> Data.configs.entities.reduce((prev,curr, index)=>{
   return {
     ...prev,
-    [curr.name.toUpperCase()]: Utils.createRequestTypes(curr.name.toUpperCase())
+    [curr.name.toUpperCase()]: Utils.createRequestTypes(curr.name.toUpperCase()),
+    [inflect.singularize(curr.name).toUpperCase()]: Utils.createRequestTypes(inflect.singularize(curr.name).toUpperCase())
   }
 },{})
 
@@ -74,6 +76,11 @@ export const getActions = ()=> Data.configs.entities.reduce((prev,curr, index)=>
       request: query => Utils.action(getActionTypes()[entityName].REQUEST, {[curr.paginationKey || 'query']:query}),
       success:  (response, query) => Utils.action(getActionTypes()[entityName].SUCCESS, {response, [curr.paginationKey || 'query']:query}),
       failure:  (error, query) => Utils.action(getActionTypes()[entityName].FAILURE,  {error, [curr.paginationKey || 'query']:query}),
+    },
+    [inflect.singularize(curr.name)]:{
+      request: id => Utils.action(getActionTypes()[inflect.singularize(curr.name).toUpperCase()].REQUEST, {[curr.uniqueIdAttribute || 'id']:id}),
+      success:  (response, id) => Utils.action(getActionTypes()[inflect.singularize(curr.name).toUpperCase()].SUCCESS, {response, [curr.uniqueIdAttribute || 'id']:id}),
+      failure:  (error, id) => Utils.action(getActionTypes()[inflect.singularize(curr.name).toUpperCase()].FAILURE,  {error, [curr.uniqueIdAttribute || 'id']:id}),
     }
   }
 },{})
@@ -89,9 +96,11 @@ export const getActions = ()=> Data.configs.entities.reduce((prev,curr, index)=>
 
 
 const getSchemas = ()=>Data.configs.entities.reduce((prev,curr, index)=>{
+  const entitySchema = new Schema(curr.name, {idAttribute: curr.uniqueIdAttribute})
   return {
     ...prev,
-    [curr.name]: {[curr.name]: arrayOf(new Schema(curr.name, {idAttribute: curr.uniqueIdAttribute}))}
+    [curr.name]: {[curr.name]: arrayOf(entitySchema)},
+    [inflect.singularize(curr.name)]: entitySchema
   }
 },{})
 
@@ -103,7 +112,8 @@ const getSchemas = ()=>Data.configs.entities.reduce((prev,curr, index)=>{
 export const getApiFetchActions = ()=>Data.configs.entities.reduce((prev,curr, index)=>{
   return {
     ...prev,
-    [curr.name]: queryUrl => callApi(Data.configs.apiEndpoint+curr.apiUrl+queryUrl, 'GET', {schema:getSchemas()[curr.name] } )
+    [curr.name]: queryUrl => callApi(Data.configs.apiEndpoint+curr.apiUrl(queryUrl), 'GET', {schema:getSchemas()[curr.name] } ),
+    [inflect.singularize(curr.name)]: id => callApi(Data.configs.apiEndpoint+curr.singleApiUrl(id), 'GET', {schema:getSchemas()[inflect.singularize(curr.name)] } )
   }
 },{})
 
@@ -113,7 +123,8 @@ export const getApiFetchActions = ()=>Data.configs.entities.reduce((prev,curr, i
 export const getFetchActions = ()=>Data.configs.entities.reduce((prev,curr, index)=>{
   return {
     ...prev,
-    [curr.name]: apiCallForEntity.bind(null, getActions()[curr.name], getApiFetchActions()[curr.name])
+    [curr.name]: apiCallForEntity.bind(null, getActions()[curr.name], getApiFetchActions()[curr.name]),
+    [inflect.singularize(curr.name)]: apiCallForEntity.bind(null, getActions()[inflect.singularize(curr.name)], getApiFetchActions()[inflect.singularize(curr.name)])
   }
 },{})
 
@@ -126,8 +137,6 @@ export const getLoadEntityFunctions = ()=> Data.configs.entities.reduce((prev,cu
   const entityFunctionOffest = Utils.capitalize(curr.name)
   
   const loadEntityBaseFunc = function*(query, loadMore){
-    console.log('I AM TRY TO LOAD '+curr.name+' with query ', + query)
-
     const entityPaginationData = yield select(state=>get(state,`pagination.${curr.name}.${query || 'default'}`))
 
     const hasToLoadMore =  entityPaginationData && 
@@ -142,6 +151,12 @@ export const getLoadEntityFunctions = ()=> Data.configs.entities.reduce((prev,cu
         yield call(getFetchActions()[curr.name], `${query}&page=${pageCount + 1}`, query)
       }
     }
+  }
+  function* loadSingleEntityBaseFunc(uniqueIdAttribute = 'id') {
+
+    const entity = yield select(state=>get(state,`entities.${curr.name}.${uniqueIdAttribute}`))
+
+    if (!entity ) yield call(getFetchActions()[inflect.singularize(curr.name)], uniqueIdAttribute, uniqueIdAttribute)
   }
 
   return {
@@ -159,16 +174,27 @@ export const getLoadEntityFunctions = ()=> Data.configs.entities.reduce((prev,cu
           yield fork(loadEntityBaseFunc, data[curr.paginationKey || 'query'], true);
         }
       },
-      [`load${entityFunctionOffest}`]: loadEntityBaseFunc
+      [`load${entityFunctionOffest}`]: loadEntityBaseFunc,
+      [`watchLoad${inflect.singularize(entityFunctionOffest)}`]: function*() {
+        while(true) {
+          const data =  yield take(`LOAD_${inflect.singularize(curr.name).toUpperCase()}`)
+          yield fork(loadSingleEntityBaseFunc, data[curr.uniqueIdAttribute]);
+        }
+      },
+      [`load${inflect.singularize(entityFunctionOffest)}`]: loadSingleEntityBaseFunc,
     }
   }
 },{})
 
 export const getWatchers = () => {
   return Data.configs.entities.reduce((prev,curr, index)=>{
+    
     const entityFunctionOffest = Utils.capitalize(curr.name)
+    const singeWatcher = []
+    curr.singleApiUrl && singeWatcher.push(getLoadEntityFunctions()[curr.name][`watchLoad${inflect.singularize(entityFunctionOffest)}`])
       return [
         ...prev,
+        ...singeWatcher,
         getLoadEntityFunctions()[curr.name][`watchLoad${entityFunctionOffest}`],
         getLoadEntityFunctions()[curr.name][`watchLoadMore${entityFunctionOffest}`]
     ]
