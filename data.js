@@ -1,10 +1,14 @@
 import defaultConfigs from './config'
 import merge from 'lodash/merge'
+import * as Utils from './utils'
 class Data {
   constructor(){
     this._configs = defaultConfigs
+
   }
-  reinitialize(configs){
+  async reinitialize(configs){
+    // const test = await Utils.validateConfigs(configs)
+    // if(!test) throw new Error('error')
     this._configs = merge(this._configs, configs)
   }
   get configs(){

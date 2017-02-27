@@ -1,5 +1,30 @@
 import { camelizeKeys } from 'humps'
 import { normalize } from 'normalizr'
+import yup from 'yup'
+
+const schema = yup.object().shape({
+  apiEndpoint: yup.string().required(),
+  reducers:    yup.object().shape({
+    paginate:{
+      totalPageCountField: yup.string().default('pages').required(),
+      totalCountField: yup.string().default('totalCount').required(),
+      currentPageField: yup.string().default(undefined) //optional
+    },
+  }),
+  entities:yup.array().of(yup.object().shape(
+    {
+      uniqueIdAttribute: yup.string().required().default('id'), //required
+      name: yup.string().lowercase(), //required
+      paginationExtraFields: yup.array().of(yup.string()),
+      paginationKey: yup.string().required().default('id')
+    },
+  ))
+})
+
+export async function validateConfigs(configs){
+  const valid = await schema.isValid(configs)
+  return valid
+}
 
 export function normalizeObject(json, schema){
   const camelizedJson = camelizeKeys(json)
@@ -26,3 +51,4 @@ export function createRequestTypes(base) {
 export function action(type, payload = {}) {
   return {type, ...payload}
 }
+

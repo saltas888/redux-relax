@@ -3,8 +3,9 @@ import connect from 'react-redux/lib/components/connect'
 import {bindActionCreators} from 'redux';
 import * as Utils from './utils'
 import get from 'lodash/get'
+const inflect = require('i')();
 
-export default (entity, dataRetriever) => {
+export const multiple = (entity, dataRetriever) => {
 
   return WrappedComponent =>{
     class Connected extends React.Component {
@@ -40,6 +41,47 @@ export default (entity, dataRetriever) => {
         state,
         [entity]:data,
         isFetching:entityPaginationData.isFetching
+      }
+    }
+
+    return connect(mapStateToProps, mapDispatchToProps)(Connected);
+  }
+}
+
+export const single = (entity, idRetriever) => {
+  const loadEntityFuncName = `load${Utils.capitalize(inflect.singularize(entity))}`
+  return WrappedComponent =>{
+    class Connected extends React.Component {
+
+      static WrappedComponent = WrappedComponent;
+
+      shouldComponentUpdate(nextProps, nextState) {
+        if(nextProps[entity] !== this.props[entity] || nextProps.isFetching !== this.props.isFetching) return true
+        return false
+      }
+
+      componentWillMount() {
+        this.props[loadEntityFuncName](idRetriever(this.props.state))
+      }
+
+      render() {
+        return <WrappedComponent  {...this.props} />
+      }
+    }
+
+    function mapDispatchToProps(dispatch) {
+        return bindActionCreators({
+          [loadEntityFuncName]: id => (
+            Utils.action(`LOAD_MORE_${inflect.singularize(entity).toUpperCase()}`, {[entity.uniqueIdAttribute || 'id']: id})
+          )
+        }, dispatch);
+    }
+
+    function mapStateToProps(state) {
+      const data = get(state,`entities.${entity}.${idRetriever(state)}`)
+      return {
+        state,
+        [entity]:data,
       }
     }
 
