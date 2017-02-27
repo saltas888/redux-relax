@@ -3,10 +3,16 @@ import connect from 'react-redux/lib/components/connect'
 import {bindActionCreators} from 'redux';
 import * as Utils from './utils'
 import get from 'lodash/get'
+import Data from './data'
+
 const inflect = require('i')();
 
 export const multiple = (entity, dataRetriever) => {
-
+  const entityData = Data.configs.entities.find(e=>e.name === entity)
+  if(!entityData) {
+    Utils.throwError('Unknown entity named:' + entity)
+    return
+  }
   return WrappedComponent =>{
     class Connected extends React.Component {
 
@@ -49,6 +55,11 @@ export const multiple = (entity, dataRetriever) => {
 }
 
 export const single = (entity, idRetriever) => {
+  const entityData = Data.configs.entities.find(e=>e.name === entity)
+  if(!entityData) {
+    Utils.throwError('Unknown entity named:' + entity)
+    return
+  }
   const loadEntityFuncName = `load${Utils.capitalize(inflect.singularize(entity))}`
   return WrappedComponent =>{
     class Connected extends React.Component {
@@ -56,12 +67,12 @@ export const single = (entity, idRetriever) => {
       static WrappedComponent = WrappedComponent;
 
       shouldComponentUpdate(nextProps, nextState) {
-        if(nextProps[entity] !== this.props[entity] || nextProps.isFetching !== this.props.isFetching) return true
+        if(nextProps[inflect.singularize(entity)] !== this.props[inflect.singularize(entity)]) return true
         return false
       }
 
       componentWillMount() {
-        this.props[loadEntityFuncName](idRetriever(this.props.state))
+        this.props[loadEntityFuncName](idRetriever(this.props.state, this.props))
       }
 
       render() {
@@ -72,16 +83,17 @@ export const single = (entity, idRetriever) => {
     function mapDispatchToProps(dispatch) {
         return bindActionCreators({
           [loadEntityFuncName]: id => (
-            Utils.action(`LOAD_MORE_${inflect.singularize(entity).toUpperCase()}`, {[entity.uniqueIdAttribute || 'id']: id})
+            Utils.action(`LOAD_${inflect.singularize(entity).toUpperCase()}`, {[entityData.uniqueIdAttribute || 'id']: id})
           )
         }, dispatch);
     }
 
-    function mapStateToProps(state) {
-      const data = get(state,`entities.${entity}.${idRetriever(state)}`)
+    function mapStateToProps(state, ownProps) {
+
+      const data = get(state,`entities.${entity}.${idRetriever(state, ownProps)}`)
       return {
         state,
-        [entity]:data,
+        [inflect.singularize(entity)]:data,
       }
     }
 

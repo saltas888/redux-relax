@@ -26,6 +26,11 @@ export async function validateConfigs(configs){
   return valid
 }
 
+
+export function throwError(message){
+  throw new Error('Redux-Relax:: ' + message)
+}
+
 export function normalizeObject(json, schema){
   const camelizedJson = camelizeKeys(json)
   return Object.assign({},
