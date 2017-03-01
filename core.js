@@ -4,7 +4,6 @@ import store from '../store'
 import { Schema, arrayOf } from 'normalizr'
 import get from 'lodash/get'
 import { takeEvery, takeLatest } from 'redux-saga'
-import {reset} from 'redux-form';
 import { take, put, call, fork, select } from 'redux-saga/effects'
 const inflect = require('i')();
 

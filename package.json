@@ -1,0 +1,41 @@
+{
+  "name": "redux-relax",
+  "version": "1.0.0",
+  "description": "Easy load & paginate data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saltas888/redux-relax.git"
+  },
+  "keywords": [
+    "react",
+    "redux",
+    "relax",
+    "no",
+    "boilerplates",
+    "pagination",
+    "normalized",
+    "data"
+  ],
+  "author": "Dimitris Saltaferis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/saltas888/redux-relax/issues"
+  },
+  "dependencies": {
+    "i": "^0.3.5",
+    "lodash": "^4.12.0",
+    "normalizr": "^2.1.0",
+    "pluralize": "^1.2.1",
+    "react": "15.1.0",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2",
+    "redux-logger": "^2.0.2",
+    "redux-saga": "^0.10.4",
+    "updeep": "^0.14.0"
+  },
+  "homepage": "https://github.com/saltas888/redux-relax#readme"
+}
