@@ -16,8 +16,6 @@ export const multiple = (entity, dataRetriever) => {
   return WrappedComponent =>{
     class Connected extends React.Component {
 
-      static WrappedComponent = WrappedComponent;
-
       shouldComponentUpdate(nextProps, nextState) {
         if(nextProps[entity] !== this.props[entity] || nextProps.isFetching !== this.props.isFetching) return true
         return false
@@ -34,8 +32,8 @@ export const multiple = (entity, dataRetriever) => {
 
     function mapDispatchToProps(dispatch) {
         return bindActionCreators({
-          [`load${Utils.capitalize(entity)}`]: query => Utils.action(`LOAD_${entity.toUpperCase()}`, {query}),
-          [`loadMore${Utils.capitalize(entity)}`]: query => Utils.action(`LOAD_MORE_${entity.toUpperCase()}`, {query})
+          [`load${Utils.capitalize(entity)}`]: query => Utils.action(`LOAD_${entity.toUpperCase()}`, {[entityData.paginationKey || 'query']:query}),
+          [`loadMore${Utils.capitalize(entity)}`]: query => Utils.action(`LOAD_MORE_${entity.toUpperCase()}`, {[entityData.paginationKey || 'query']:query})
         }, dispatch);
     }
 
@@ -63,8 +61,6 @@ export const single = (entity, idRetriever) => {
   const loadEntityFuncName = `load${Utils.capitalize(inflect.singularize(entity))}`
   return WrappedComponent =>{
     class Connected extends React.Component {
-
-      static WrappedComponent = WrappedComponent;
 
       shouldComponentUpdate(nextProps, nextState) {
         if(nextProps[inflect.singularize(entity)] !== this.props[inflect.singularize(entity)]) return true

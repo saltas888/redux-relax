@@ -1,6 +1,5 @@
 import Data from './data'
 import * as Utils from './utils'
-import store from '../store'
 import { Schema, arrayOf } from 'normalizr'
 import get from 'lodash/get'
 import { takeEvery, takeLatest } from 'redux-saga'
@@ -58,9 +57,9 @@ function* apiCallForEntity(entity, apiFn, url, data) {
 
 export const getActionTypes = ()=> Data.configs.entities.reduce((prev,curr, index)=>{
   return {
-    ...prev,
     [curr.name.toUpperCase()]: Utils.createRequestTypes(curr.name.toUpperCase()),
-    [inflect.singularize(curr.name).toUpperCase()]: Utils.createRequestTypes(inflect.singularize(curr.name).toUpperCase())
+    [inflect.singularize(curr.name).toUpperCase()]: Utils.createRequestTypes(inflect.singularize(curr.name).toUpperCase()),
+    ...prev,
   }
 },{})
 
@@ -70,7 +69,6 @@ export const getActionTypes = ()=> Data.configs.entities.reduce((prev,curr, inde
 export const getActions = ()=> Data.configs.entities.reduce((prev,curr, index)=>{
   const entityName = curr.name.toUpperCase()
   return {
-    ...prev,
     [curr.name]: {
       request: query => Utils.action(getActionTypes()[entityName].REQUEST, {[curr.paginationKey || 'query']:query}),
       success:  (response, query) => Utils.action(getActionTypes()[entityName].SUCCESS, {response, [curr.paginationKey || 'query']:query}),
@@ -80,7 +78,8 @@ export const getActions = ()=> Data.configs.entities.reduce((prev,curr, index)=>
       request: id => Utils.action(getActionTypes()[inflect.singularize(curr.name).toUpperCase()].REQUEST, {[curr.uniqueIdAttribute || 'id']:id}),
       success:  (response, id) => Utils.action(getActionTypes()[inflect.singularize(curr.name).toUpperCase()].SUCCESS, {response, [curr.uniqueIdAttribute || 'id']:id}),
       failure:  (error, id) => Utils.action(getActionTypes()[inflect.singularize(curr.name).toUpperCase()].FAILURE,  {error, [curr.uniqueIdAttribute || 'id']:id}),
-    }
+    },
+    ...prev,
   }
 },{})
 
@@ -110,9 +109,9 @@ const getSchemas = ()=>Data.configs.entities.reduce((prev,curr, index)=>{
 //TODO:: GET THE URL PARAMS IN ORDER TO HAVE DIFFERENT PAGINATION
 export const getApiFetchActions = ()=>Data.configs.entities.reduce((prev,curr, index)=>{
   return {
-    ...prev,
     [curr.name]: queryUrl => callApi(Data.configs.apiEndpoint+curr.apiUrl(queryUrl), 'GET', {schema:getSchemas()[curr.name] } ),
-    [inflect.singularize(curr.name)]: id => callApi(Data.configs.apiEndpoint+curr.singleApiUrl(id), 'GET', {schema:getSchemas()[inflect.singularize(curr.name)] } )
+    [inflect.singularize(curr.name)]: id => callApi(Data.configs.apiEndpoint+curr.singleApiUrl(id), 'GET', {schema:getSchemas()[inflect.singularize(curr.name)] } ),
+    ...prev,
   }
 },{})
 
@@ -192,10 +191,10 @@ export const getWatchers = () => {
     const singeWatcher = []
     curr.singleApiUrl && singeWatcher.push(getLoadEntityFunctions()[curr.name][`watchLoad${inflect.singularize(entityFunctionOffest)}`])
       return [
+        getLoadEntityFunctions()[curr.name][`watchLoad${entityFunctionOffest}`],
+        getLoadEntityFunctions()[curr.name][`watchLoadMore${entityFunctionOffest}`],
         ...prev,
         ...singeWatcher,
-        getLoadEntityFunctions()[curr.name][`watchLoad${entityFunctionOffest}`],
-        getLoadEntityFunctions()[curr.name][`watchLoadMore${entityFunctionOffest}`]
     ]
   },[])
 }

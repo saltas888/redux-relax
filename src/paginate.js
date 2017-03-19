@@ -27,10 +27,15 @@ export default function paginate({ types, mapActionToKey, entity, extraFields })
   }
 
   function updatePagination(key, state = initialPaginateState, action) {
-    if(includes([...requestTypes, ...failureTypes], action.type)) {
+    if(includes(requestTypes, action.type)) {
       return updeep({
         isFetching: true
       },state)
+    }
+    else if(includes(failureTypes, action.type)){
+      return updeep({
+        isFetching: false
+      },state) 
     }
     else if(includes(successTypes, action.type)) {
       
