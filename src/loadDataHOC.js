@@ -17,8 +17,8 @@ export const multiple = (entity, dataRetriever) => {
     class Connected extends React.Component {
 
       shouldComponentUpdate(nextProps, nextState) {
-        if(nextProps[entity] !== this.props[entity] || nextProps.isFetching !== this.props.isFetching) return true
-        return false
+        // if(nextProps[entity] !== this.props[entity] || nextProps.isFetching !== this.props.isFetching) return true
+        return true
       }
 
       componentWillMount() {
@@ -63,8 +63,8 @@ export const single = (entity, idRetriever) => {
     class Connected extends React.Component {
 
       shouldComponentUpdate(nextProps, nextState) {
-        if(nextProps[inflect.singularize(entity)] !== this.props[inflect.singularize(entity)]) return true
-        return false
+        // if(nextProps[inflect.singularize(entity)] !== this.props[inflect.singularize(entity)]) return true
+        return true
       }
 
       componentWillMount() {

@@ -84,7 +84,7 @@ function paginate(_ref) {
 
       var newData = {
         isFetching: false,
-        ids: (0, _union2.default)(state.ids, action.response.result[entity]),
+        ids: (0, _union2.default)(state.ids, action.response.result),
         totalPages: action.response.result[totalPageCountField],
         totalCount: action.response.result[totalCountField],
         pageCount: nextPage,

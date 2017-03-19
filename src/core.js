@@ -23,7 +23,7 @@ function getHeaders(contentType) {
 function callApi(endpoint, requestType, { schema } ) {
   return fetch(endpoint,{
       method: requestType,
-      headers: getHeaders('application/json')
+      // headers: getHeaders('application/json')
     })
     .then(response =>
       response.json().then(json => ({ json, response }))

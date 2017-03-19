@@ -54,8 +54,7 @@ function callApi(endpoint, requestType, _ref) {
   var schema = _ref.schema;
 
   return fetch(endpoint, {
-    method: requestType,
-    headers: getHeaders('application/json')
+    method: requestType
   }).then(function (response) {
     return response.json().then(function (json) {
       return { json: json, response: response };

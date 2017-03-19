@@ -64,8 +64,8 @@ var multiple = exports.multiple = function multiple(entity, dataRetriever) {
       _createClass(Connected, [{
         key: 'shouldComponentUpdate',
         value: function shouldComponentUpdate(nextProps, nextState) {
-          if (nextProps[entity] !== this.props[entity] || nextProps.isFetching !== this.props.isFetching) return true;
-          return false;
+          // if(nextProps[entity] !== this.props[entity] || nextProps.isFetching !== this.props.isFetching) return true
+          return true;
         }
       }, {
         key: 'componentWillMount',
@@ -131,8 +131,8 @@ var single = exports.single = function single(entity, idRetriever) {
       _createClass(Connected, [{
         key: 'shouldComponentUpdate',
         value: function shouldComponentUpdate(nextProps, nextState) {
-          if (nextProps[inflect.singularize(entity)] !== this.props[inflect.singularize(entity)]) return true;
-          return false;
+          // if(nextProps[inflect.singularize(entity)] !== this.props[inflect.singularize(entity)]) return true
+          return true;
         }
       }, {
         key: 'componentWillMount',
