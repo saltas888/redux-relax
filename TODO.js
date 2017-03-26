@@ -8,15 +8,21 @@
 
 // ADD LOAD ONE ENTITY FUNCTION ---DONE
 
+// UPLOAD TO NPM  ---DONE
+
+/***
+  ---------------------------------------------------------------
+***/
+
+// CREATE EXAMPLES - ATTACH TO SAGAS REAL WORLD EXAMPLE ---IN progress
+
 /***
   ---------------------------------------------------------------
 ***/
 
 // HANDLE INITIALLIZATION ERROR & GENERAL ERROR HANDLING 
 
-// UPLOAD TO NPM
-
-// CREATE EXAMPLES - ATTACH TO SAGAS REAL WORLD EXAMPLE
+// FIX BUG `react is not defined` WHILE BUILDING DIST
 
 
 
