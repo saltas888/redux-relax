@@ -55,18 +55,16 @@ function* apiCallForEntity(entity, apiFn, url, data) {
 }
 
 
-export const getActionTypes = ()=> Data.configs.entities.reduce((prev,curr, index)=>{
+export const getActionTypes = ()=> Data.configs.entities.reduce((prev,curr, index) => {
   return {
     [curr.name.toUpperCase()]: Utils.createRequestTypes(curr.name.toUpperCase()),
     [inflect.singularize(curr.name).toUpperCase()]: Utils.createRequestTypes(inflect.singularize(curr.name).toUpperCase()),
-    ...prev,
+    ...prev
   }
 },{})
 
-//export const PRODUCTS = createRequestTypes('PRODUCTS')
 
-
-export const getActions = ()=> Data.configs.entities.reduce((prev,curr, index)=>{
+export const getActions = ()=> Data.configs.entities.reduce((prev, curr) => {
   const entityName = curr.name.toUpperCase()
   return {
     [curr.name]: {
@@ -79,7 +77,7 @@ export const getActions = ()=> Data.configs.entities.reduce((prev,curr, index)=>
       success:  (response, id) => Utils.action(getActionTypes()[inflect.singularize(curr.name).toUpperCase()].SUCCESS, {response, [curr.uniqueIdAttribute || 'id']:id}),
       failure:  (error, id) => Utils.action(getActionTypes()[inflect.singularize(curr.name).toUpperCase()].FAILURE,  {error, [curr.uniqueIdAttribute || 'id']:id}),
     },
-    ...prev,
+    ...prev
   }
 },{})
 
@@ -93,11 +91,11 @@ export const getActions = ()=> Data.configs.entities.reduce((prev,curr, index)=>
 
 
 
-const getSchemas = ()=>Data.configs.entities.reduce((prev,curr, index)=>{
+const getSchemas = ()=>Data.configs.entities.reduce((prev,curr) => {
   const entitySchema = new Schema(curr.name, {idAttribute: curr.uniqueIdAttribute})
   return {
     ...prev,
-    [curr.name]: {[curr.name]: arrayOf(entitySchema)},
+    [curr.name]: arrayOf(entitySchema),
     [inflect.singularize(curr.name)]: entitySchema
   }
 },{})
@@ -107,18 +105,18 @@ const getSchemas = ()=>Data.configs.entities.reduce((prev,curr, index)=>{
 // export const productSchemaArray = { products:arrayOf(new Schema('products', {idAttribute: 'slug'}))}
 
 //TODO:: GET THE URL PARAMS IN ORDER TO HAVE DIFFERENT PAGINATION
-export const getApiFetchActions = ()=>Data.configs.entities.reduce((prev,curr, index)=>{
+export const getApiFetchActions = ()=>Data.configs.entities.reduce((prev,curr) => {
   return {
     [curr.name]: queryUrl => callApi(Data.configs.apiEndpoint+curr.apiUrl(queryUrl), 'GET', {schema:getSchemas()[curr.name] } ),
     [inflect.singularize(curr.name)]: id => callApi(Data.configs.apiEndpoint+curr.singleApiUrl(id), 'GET', {schema:getSchemas()[inflect.singularize(curr.name)] } ),
-    ...prev,
+    ...prev
   }
 },{})
 
 // export const apiFetchProducts = url => callApi(url, 'GET', {schema:schemas.productSchemaArray } )
 
 
-export const getFetchActions = ()=>Data.configs.entities.reduce((prev,curr, index)=>{
+export const getFetchActions = ()=>Data.configs.entities.reduce((prev, curr) => {
   return {
     ...prev,
     [curr.name]: apiCallForEntity.bind(null, getActions()[curr.name], getApiFetchActions()[curr.name]),
@@ -131,7 +129,7 @@ export const getFetchActions = ()=>Data.configs.entities.reduce((prev,curr, inde
 
 
 //TODO: get query & loadMore
-export const getLoadEntityFunctions = ()=> Data.configs.entities.reduce((prev,curr, index)=>{
+export const getLoadEntityFunctions = ()=> Data.configs.entities.reduce((prev, curr) => {
   const entityFunctionOffest = Utils.capitalize(curr.name)
   
   const loadEntityBaseFunc = function*(query, loadMore){

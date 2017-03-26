@@ -1,6 +1,7 @@
 import defaultConfigs from './config'
 import merge from 'lodash/merge'
 import * as Utils from './utils'
+
 class Data {
   constructor(){
     this._configs = defaultConfigs

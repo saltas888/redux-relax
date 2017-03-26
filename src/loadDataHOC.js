@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
+
 import connect from 'react-redux/lib/components/connect'
 import {bindActionCreators} from 'redux';
 import * as Utils from './utils'

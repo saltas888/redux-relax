@@ -127,11 +127,8 @@ var getActionTypes = exports.getActionTypes = function getActionTypes() {
   }, {});
 };
 
-//export const PRODUCTS = createRequestTypes('PRODUCTS')
-
-
 var getActions = exports.getActions = function getActions() {
-  return _data2.default.configs.entities.reduce(function (prev, curr, index) {
+  return _data2.default.configs.entities.reduce(function (prev, curr) {
     var _extends3;
 
     var entityName = curr.name.toUpperCase();
@@ -167,11 +164,11 @@ var getActions = exports.getActions = function getActions() {
 
 
 var getSchemas = function getSchemas() {
-  return _data2.default.configs.entities.reduce(function (prev, curr, index) {
+  return _data2.default.configs.entities.reduce(function (prev, curr) {
     var _extends4;
 
     var entitySchema = new _normalizr.Schema(curr.name, { idAttribute: curr.uniqueIdAttribute });
-    return _extends({}, prev, (_extends4 = {}, _defineProperty(_extends4, curr.name, _defineProperty({}, curr.name, (0, _normalizr.arrayOf)(entitySchema))), _defineProperty(_extends4, inflect.singularize(curr.name), entitySchema), _extends4));
+    return _extends({}, prev, (_extends4 = {}, _defineProperty(_extends4, curr.name, (0, _normalizr.arrayOf)(entitySchema)), _defineProperty(_extends4, inflect.singularize(curr.name), entitySchema), _extends4));
   }, {});
 };
 
@@ -181,7 +178,7 @@ var getSchemas = function getSchemas() {
 
 //TODO:: GET THE URL PARAMS IN ORDER TO HAVE DIFFERENT PAGINATION
 var getApiFetchActions = exports.getApiFetchActions = function getApiFetchActions() {
-  return _data2.default.configs.entities.reduce(function (prev, curr, index) {
+  return _data2.default.configs.entities.reduce(function (prev, curr) {
     var _extends5;
 
     return _extends((_extends5 = {}, _defineProperty(_extends5, curr.name, function (queryUrl) {
@@ -196,7 +193,7 @@ var getApiFetchActions = exports.getApiFetchActions = function getApiFetchAction
 
 
 var getFetchActions = exports.getFetchActions = function getFetchActions() {
-  return _data2.default.configs.entities.reduce(function (prev, curr, index) {
+  return _data2.default.configs.entities.reduce(function (prev, curr) {
     var _extends6;
 
     return _extends({}, prev, (_extends6 = {}, _defineProperty(_extends6, curr.name, apiCallForEntity.bind(null, getActions()[curr.name], getApiFetchActions()[curr.name])), _defineProperty(_extends6, inflect.singularize(curr.name), apiCallForEntity.bind(null, getActions()[inflect.singularize(curr.name)], getApiFetchActions()[inflect.singularize(curr.name)])), _extends6));
@@ -208,8 +205,8 @@ var getFetchActions = exports.getFetchActions = function getFetchActions() {
 
 //TODO: get query & loadMore
 var getLoadEntityFunctions = exports.getLoadEntityFunctions = function getLoadEntityFunctions() {
-  return _data2.default.configs.entities.reduce(function (prev, curr, index) {
-    var _curr$name2;
+  return _data2.default.configs.entities.reduce(function (prev, curr) {
+    var _curr$name;
 
     var _marked2 = [loadSingleEntityBaseFunc].map(regeneratorRuntime.mark);
 
@@ -290,7 +287,7 @@ var getLoadEntityFunctions = exports.getLoadEntityFunctions = function getLoadEn
       }, _marked2[0], this);
     }
 
-    return _extends({}, prev, _defineProperty({}, curr.name, (_curr$name2 = {}, _defineProperty(_curr$name2, 'watchLoad' + entityFunctionOffest, regeneratorRuntime.mark(function undefined() {
+    return _extends({}, prev, _defineProperty({}, curr.name, (_curr$name = {}, _defineProperty(_curr$name, 'watchLoad' + entityFunctionOffest, regeneratorRuntime.mark(function undefined() {
       var data;
       return regeneratorRuntime.wrap(function undefined$(_context4) {
         while (1) {
@@ -319,7 +316,7 @@ var getLoadEntityFunctions = exports.getLoadEntityFunctions = function getLoadEn
           }
         }
       }, undefined, this);
-    })), _defineProperty(_curr$name2, 'watchLoadMore' + entityFunctionOffest, regeneratorRuntime.mark(function undefined() {
+    })), _defineProperty(_curr$name, 'watchLoadMore' + entityFunctionOffest, regeneratorRuntime.mark(function undefined() {
       var data;
       return regeneratorRuntime.wrap(function undefined$(_context5) {
         while (1) {
@@ -348,7 +345,7 @@ var getLoadEntityFunctions = exports.getLoadEntityFunctions = function getLoadEn
           }
         }
       }, undefined, this);
-    })), _defineProperty(_curr$name2, 'load' + entityFunctionOffest, loadEntityBaseFunc), _defineProperty(_curr$name2, 'watchLoad' + inflect.singularize(entityFunctionOffest), regeneratorRuntime.mark(function undefined() {
+    })), _defineProperty(_curr$name, 'load' + entityFunctionOffest, loadEntityBaseFunc), _defineProperty(_curr$name, 'watchLoad' + inflect.singularize(entityFunctionOffest), regeneratorRuntime.mark(function undefined() {
       var data;
       return regeneratorRuntime.wrap(function undefined$(_context6) {
         while (1) {
@@ -377,7 +374,7 @@ var getLoadEntityFunctions = exports.getLoadEntityFunctions = function getLoadEn
           }
         }
       }, undefined, this);
-    })), _defineProperty(_curr$name2, 'load' + inflect.singularize(entityFunctionOffest), loadSingleEntityBaseFunc), _curr$name2)));
+    })), _defineProperty(_curr$name, 'load' + inflect.singularize(entityFunctionOffest), loadSingleEntityBaseFunc), _curr$name)));
   }, {});
 };
 
