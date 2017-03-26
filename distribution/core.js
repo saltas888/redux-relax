@@ -51,10 +51,12 @@ function getHeaders(contentType) {
 }
 
 function callApi(endpoint, requestType, _ref) {
-  var schema = _ref.schema;
+  var schema = _ref.schema,
+      state = _ref.state;
 
   return fetch(endpoint, {
-    method: requestType
+    method: requestType,
+    headers: _data2.default.configs.getHeaders(state)
   }).then(function (response) {
     return response.json().then(function (json) {
       return { json: json, response: response };
@@ -156,13 +158,6 @@ var getActions = exports.getActions = function getActions() {
   }, {});
 };
 
-// export const products = {
-//   request: query => action(PRODUCTS.REQUEST, {query}),
-//   success:  (response, query) => action(PRODUCTS.SUCCESS, {response, query}),
-//   failure:  (error, query) => action(PRODUCTS.FAILURE,  {error, query}),
-// }
-
-
 var getSchemas = function getSchemas() {
   return _data2.default.configs.entities.reduce(function (prev, curr) {
     var _extends4;
@@ -172,38 +167,31 @@ var getSchemas = function getSchemas() {
   }, {});
 };
 
-// export const productSchema = new Schema('products', {idAttribute: 'slug'})
-
-// export const productSchemaArray = { products:arrayOf(new Schema('products', {idAttribute: 'slug'}))}
-
 //TODO:: GET THE URL PARAMS IN ORDER TO HAVE DIFFERENT PAGINATION
-var getApiFetchActions = exports.getApiFetchActions = function getApiFetchActions() {
+var getApiFetchActions = exports.getApiFetchActions = function getApiFetchActions(state) {
   return _data2.default.configs.entities.reduce(function (prev, curr) {
     var _extends5;
 
+    var arraySchema = getSchemas()[curr.name];
+    if (curr.itemsField) {
+      arraySchema = _defineProperty({}, curr.itemsField, arraySchema);
+    }
     return _extends((_extends5 = {}, _defineProperty(_extends5, curr.name, function (queryUrl) {
-      return callApi(_data2.default.configs.apiEndpoint + curr.apiUrl(queryUrl), 'GET', { schema: getSchemas()[curr.name] });
+      return callApi(_data2.default.configs.apiEndpoint + curr.apiUrl(queryUrl), 'GET', { schema: arraySchema, state: state });
     }), _defineProperty(_extends5, inflect.singularize(curr.name), function (id) {
-      return callApi(_data2.default.configs.apiEndpoint + curr.singleApiUrl(id), 'GET', { schema: getSchemas()[inflect.singularize(curr.name)] });
+      return callApi(_data2.default.configs.apiEndpoint + curr.singleApiUrl(id), 'GET', { schema: getSchemas()[inflect.singularize(curr.name)], state: state });
     }), _extends5), prev);
   }, {});
 };
 
-// export const apiFetchProducts = url => callApi(url, 'GET', {schema:schemas.productSchemaArray } )
-
-
-var getFetchActions = exports.getFetchActions = function getFetchActions() {
+var getFetchActions = exports.getFetchActions = function getFetchActions(state) {
   return _data2.default.configs.entities.reduce(function (prev, curr) {
     var _extends6;
 
-    return _extends({}, prev, (_extends6 = {}, _defineProperty(_extends6, curr.name, apiCallForEntity.bind(null, getActions()[curr.name], getApiFetchActions()[curr.name])), _defineProperty(_extends6, inflect.singularize(curr.name), apiCallForEntity.bind(null, getActions()[inflect.singularize(curr.name)], getApiFetchActions()[inflect.singularize(curr.name)])), _extends6));
+    return _extends({}, prev, (_extends6 = {}, _defineProperty(_extends6, curr.name, apiCallForEntity.bind(null, getActions()[curr.name], getApiFetchActions(state)[curr.name])), _defineProperty(_extends6, inflect.singularize(curr.name), apiCallForEntity.bind(null, getActions()[inflect.singularize(curr.name)], getApiFetchActions(state)[inflect.singularize(curr.name)])), _extends6));
   }, {});
 };
 
-//export const fetchProducts = apiCallForEntity.bind(null, products, api.fetchProducts)
-
-
-//TODO: get query & loadMore
 var getLoadEntityFunctions = exports.getLoadEntityFunctions = function getLoadEntityFunctions() {
   return _data2.default.configs.entities.reduce(function (prev, curr) {
     var _curr$name;
@@ -213,43 +201,50 @@ var getLoadEntityFunctions = exports.getLoadEntityFunctions = function getLoadEn
     var entityFunctionOffest = Utils.capitalize(curr.name);
 
     var loadEntityBaseFunc = regeneratorRuntime.mark(function loadEntityBaseFunc(query, loadMore) {
-      var entityPaginationData, hasToLoadMore, pageCount;
+      var state, entityPaginationData, hasToLoadMore, pageCount;
       return regeneratorRuntime.wrap(function loadEntityBaseFunc$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
               return (0, _effects.select)(function (state) {
-                return (0, _get2.default)(state, 'pagination.' + curr.name + '.' + (query || 'default'));
+                return state;
               });
 
             case 2:
+              state = _context2.sent;
+              _context2.next = 5;
+              return (0, _effects.select)(function (state) {
+                return (0, _get2.default)(state, 'pagination.' + curr.name + '.' + (query || 'default'));
+              });
+
+            case 5:
               entityPaginationData = _context2.sent;
               hasToLoadMore = entityPaginationData && entityPaginationData.pageCount < entityPaginationData.totalPages;
 
               if (!(!entityPaginationData || loadMore && hasToLoadMore)) {
-                _context2.next = 13;
+                _context2.next = 16;
                 break;
               }
 
               if (entityPaginationData) {
-                _context2.next = 10;
+                _context2.next = 13;
                 break;
               }
 
-              _context2.next = 8;
-              return (0, _effects.call)(getFetchActions()[curr.name], query, query);
+              _context2.next = 11;
+              return (0, _effects.call)(getFetchActions(state)[curr.name], query, query);
 
-            case 8:
-              _context2.next = 13;
+            case 11:
+              _context2.next = 16;
               break;
 
-            case 10:
-              pageCount = entityPaginationData.pageCount;
-              _context2.next = 13;
-              return (0, _effects.call)(getFetchActions()[curr.name], query + '&page=' + (pageCount + 1), query);
-
             case 13:
+              pageCount = entityPaginationData.pageCount;
+              _context2.next = 16;
+              return (0, _effects.call)(getFetchActions(state)[curr.name], query + '&page=' + (pageCount + 1), query);
+
+            case 16:
             case 'end':
               return _context2.stop();
           }
@@ -258,28 +253,35 @@ var getLoadEntityFunctions = exports.getLoadEntityFunctions = function getLoadEn
     });
     function loadSingleEntityBaseFunc() {
       var uniqueIdAttribute = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'id';
-      var entity;
+      var state, entity;
       return regeneratorRuntime.wrap(function loadSingleEntityBaseFunc$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
               return (0, _effects.select)(function (state) {
-                return (0, _get2.default)(state, 'entities.' + curr.name + '.' + uniqueIdAttribute);
+                return state;
               });
 
             case 2:
+              state = _context3.sent;
+              _context3.next = 5;
+              return (0, _effects.select)(function (state) {
+                return (0, _get2.default)(state, 'entities.' + curr.name + '.' + uniqueIdAttribute);
+              });
+
+            case 5:
               entity = _context3.sent;
 
               if (entity) {
-                _context3.next = 6;
+                _context3.next = 9;
                 break;
               }
 
-              _context3.next = 6;
-              return (0, _effects.call)(getFetchActions()[inflect.singularize(curr.name)], uniqueIdAttribute, uniqueIdAttribute);
+              _context3.next = 9;
+              return (0, _effects.call)(getFetchActions(state)[inflect.singularize(curr.name)], uniqueIdAttribute, uniqueIdAttribute);
 
-            case 6:
+            case 9:
             case 'end':
               return _context3.stop();
           }

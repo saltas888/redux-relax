@@ -20,10 +20,10 @@ function getHeaders(contentType) {
 }
 
 
-function callApi(endpoint, requestType, { schema } ) {
+function callApi(endpoint, requestType, { schema, state } ) {
   return fetch(endpoint,{
       method: requestType,
-      // headers: getHeaders('application/json')
+      headers: Data.configs.getHeaders(state)
     })
     .then(response =>
       response.json().then(json => ({ json, response }))
@@ -82,15 +82,6 @@ export const getActions = ()=> Data.configs.entities.reduce((prev, curr) => {
 },{})
 
 
-
-// export const products = {
-//   request: query => action(PRODUCTS.REQUEST, {query}),
-//   success:  (response, query) => action(PRODUCTS.SUCCESS, {response, query}),
-//   failure:  (error, query) => action(PRODUCTS.FAILURE,  {error, query}),
-// }
-
-
-
 const getSchemas = ()=>Data.configs.entities.reduce((prev,curr) => {
   const entitySchema = new Schema(curr.name, {idAttribute: curr.uniqueIdAttribute})
   return {
@@ -100,59 +91,59 @@ const getSchemas = ()=>Data.configs.entities.reduce((prev,curr) => {
   }
 },{})
 
-// export const productSchema = new Schema('products', {idAttribute: 'slug'})
-
-// export const productSchemaArray = { products:arrayOf(new Schema('products', {idAttribute: 'slug'}))}
 
 //TODO:: GET THE URL PARAMS IN ORDER TO HAVE DIFFERENT PAGINATION
-export const getApiFetchActions = ()=>Data.configs.entities.reduce((prev,curr) => {
+export const getApiFetchActions = (state)=>Data.configs.entities.reduce((prev,curr) => {
+  let arraySchema = getSchemas()[curr.name]
+  if(curr.itemsField){
+    arraySchema = {
+      [curr.itemsField]: arraySchema
+    }
+  }
   return {
-    [curr.name]: queryUrl => callApi(Data.configs.apiEndpoint+curr.apiUrl(queryUrl), 'GET', {schema:getSchemas()[curr.name] } ),
-    [inflect.singularize(curr.name)]: id => callApi(Data.configs.apiEndpoint+curr.singleApiUrl(id), 'GET', {schema:getSchemas()[inflect.singularize(curr.name)] } ),
+    [curr.name]: queryUrl => callApi(Data.configs.apiEndpoint+curr.apiUrl(queryUrl), 'GET', {schema:arraySchema, state } ),
+    [inflect.singularize(curr.name)]: id => callApi(Data.configs.apiEndpoint+curr.singleApiUrl(id), 'GET', {schema:getSchemas()[inflect.singularize(curr.name)], state } ),
     ...prev
   }
 },{})
 
-// export const apiFetchProducts = url => callApi(url, 'GET', {schema:schemas.productSchemaArray } )
 
-
-export const getFetchActions = ()=>Data.configs.entities.reduce((prev, curr) => {
+export const getFetchActions = (state)=>Data.configs.entities.reduce((prev, curr) => {
   return {
     ...prev,
-    [curr.name]: apiCallForEntity.bind(null, getActions()[curr.name], getApiFetchActions()[curr.name]),
-    [inflect.singularize(curr.name)]: apiCallForEntity.bind(null, getActions()[inflect.singularize(curr.name)], getApiFetchActions()[inflect.singularize(curr.name)])
+    [curr.name]: apiCallForEntity.bind(null, getActions()[curr.name], getApiFetchActions(state)[curr.name]),
+    [inflect.singularize(curr.name)]: apiCallForEntity.bind(null, getActions()[inflect.singularize(curr.name)], getApiFetchActions(state)[inflect.singularize(curr.name)])
   }
 },{})
 
-//export const fetchProducts = apiCallForEntity.bind(null, products, api.fetchProducts)
 
-
-
-//TODO: get query & loadMore
 export const getLoadEntityFunctions = ()=> Data.configs.entities.reduce((prev, curr) => {
   const entityFunctionOffest = Utils.capitalize(curr.name)
   
   const loadEntityBaseFunc = function*(query, loadMore){
+    const state = yield select(state=>state)
+
     const entityPaginationData = yield select(state=>get(state,`pagination.${curr.name}.${query || 'default'}`))
+
 
     const hasToLoadMore =  entityPaginationData && 
                           (entityPaginationData.pageCount < entityPaginationData.totalPages)
 
     if (!entityPaginationData  || (loadMore && hasToLoadMore) ){
       if(!entityPaginationData){
-        yield call(getFetchActions()[curr.name], query, query)  
+        yield call(getFetchActions(state)[curr.name], query, query)  
       }
       else {
         const pageCount = entityPaginationData.pageCount
-        yield call(getFetchActions()[curr.name], `${query}&page=${pageCount + 1}`, query)
+        yield call(getFetchActions(state)[curr.name], `${query}&page=${pageCount + 1}`, query)
       }
     }
   }
   function* loadSingleEntityBaseFunc(uniqueIdAttribute = 'id') {
-
+    const state = yield select(state=>state)
     const entity = yield select(state=>get(state,`entities.${curr.name}.${uniqueIdAttribute}`))
 
-    if (!entity ) yield call(getFetchActions()[inflect.singularize(curr.name)], uniqueIdAttribute, uniqueIdAttribute)
+    if (!entity ) yield call(getFetchActions(state)[inflect.singularize(curr.name)], uniqueIdAttribute, uniqueIdAttribute)
   }
 
   return {

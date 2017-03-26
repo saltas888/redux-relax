@@ -12,9 +12,13 @@ exports.default = {
       currentPageField: undefined //optional
     }
   },
+  headers: function headers(state) {
+    return {};
+  },
   entities: [
     // {
     //   uniqueIdAttribute: 'id', //required
+    //   itemsField: 'items', // field inside api response that includes the data
     //   name: '', //required
     //   apiUrl:'/', //required,
     //   paginationExtraFields:undefined,
