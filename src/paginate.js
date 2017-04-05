@@ -4,11 +4,11 @@ import includes from 'lodash/includes'
 import updeep from 'updeep';
 import Data from './data'
 
-const {totalCountField, totalPageCountField, currentPageField} = Data.configs.reducers.paginate
+const {totalCountField, totalPageCountField, currentPageField, itemsField} = Data.configs.reducers.paginate
 
 // Creates a reducer managing pagination, given the action types to handle,
 // and a function telling how to extract the key from an action.
-export default function paginate({ types, mapActionToKey, entity, extraFields }) {
+export default function paginate({ types, mapActionToKey, entity, extraFields, itemsField }) {
   if (typeof mapActionToKey !== 'function') {
     throw new Error('Expected mapActionToKey to be a function.')
   }
@@ -43,7 +43,7 @@ export default function paginate({ types, mapActionToKey, entity, extraFields })
 
       let newData = {
         isFetching: false,
-        ids: union(state.ids, action.response.result),
+        ids: union(state.ids, itemsField ? action.response.result[itemsField] : action.response.result),
         totalPages: action.response.result[totalPageCountField],
         totalCount: action.response.result[totalCountField],
         pageCount: nextPage,

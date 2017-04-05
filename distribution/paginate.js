@@ -34,7 +34,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var _Data$configs$reducer = _data2.default.configs.reducers.paginate,
     totalCountField = _Data$configs$reducer.totalCountField,
     totalPageCountField = _Data$configs$reducer.totalPageCountField,
-    currentPageField = _Data$configs$reducer.currentPageField;
+    currentPageField = _Data$configs$reducer.currentPageField,
+    itemsField = _Data$configs$reducer.itemsField;
 
 // Creates a reducer managing pagination, given the action types to handle,
 // and a function telling how to extract the key from an action.
@@ -43,7 +44,8 @@ function paginate(_ref) {
   var types = _ref.types,
       mapActionToKey = _ref.mapActionToKey,
       entity = _ref.entity,
-      extraFields = _ref.extraFields;
+      extraFields = _ref.extraFields,
+      itemsField = _ref.itemsField;
 
   if (typeof mapActionToKey !== 'function') {
     throw new Error('Expected mapActionToKey to be a function.');
@@ -84,7 +86,7 @@ function paginate(_ref) {
 
       var newData = {
         isFetching: false,
-        ids: (0, _union2.default)(state.ids, action.response.result),
+        ids: (0, _union2.default)(state.ids, itemsField ? action.response.result[itemsField] : action.response.result),
         totalPages: action.response.result[totalPageCountField],
         totalCount: action.response.result[totalCountField],
         pageCount: nextPage,

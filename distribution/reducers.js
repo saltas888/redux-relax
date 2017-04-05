@@ -50,6 +50,7 @@ exports.default = function (entitiesData) {
     return _extends({}, prev, _defineProperty({}, entity.name, (0, _paginate2.default)({
       entity: entity.name,
       extraFields: entity.paginationExtraFields,
+      itemsField: entity.itemsField,
       mapActionToKey: function mapActionToKey(action) {
         return entity.paginationKey ? action[entity.paginationKey] : 'default';
       },

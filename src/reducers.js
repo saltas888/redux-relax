@@ -28,6 +28,7 @@ export default (entitiesData) =>{
         [entity.name]: paginate({
           entity: entity.name,
           extraFields: entity.paginationExtraFields,
+          itemsField: entity.itemsField,
           mapActionToKey: action => entity.paginationKey ? action[entity.paginationKey] : 'default',
           types: {
             requestTypes: [Action.REQUEST],

@@ -10,15 +10,17 @@
 
 // UPLOAD TO NPM  ---DONE
 
-/***
-  ---------------------------------------------------------------
-***/
-
-// CREATE EXAMPLES - ATTACH TO SAGAS REAL WORLD EXAMPLE ---IN progress
+// CREATE EXAMPLES - ATTACH TO SAGAS REAL WORLD EXAMPLE ---DONE
 
 /***
   ---------------------------------------------------------------
 ***/
+
+/***
+  ---------------------------------------------------------------
+***/
+
+// SERVER SIDE RENDERING
 
 // HANDLE INITIALLIZATION ERROR & GENERAL ERROR HANDLING 
 
@@ -31,7 +33,7 @@
 //DATA - SAMPLE
 
 // const configs = {
-//   apiEndpoint: '/api/v1',//required
+// apiEndpoint: '/api/v1',//required
 //   reducers:{
 //     paginate:{
 //       totalPageCountField: 'pages', //required
@@ -39,11 +41,14 @@
 //       currentPageField: undefined //optional
 //     },
 //   },
+//   getHeaders: _ => ({}),
+//   customEntityReducerHandler: customEntityReducerHandler,
 //   entities:[
 //     {
 //       uniqueIdAttribute: 'slug', //required
 //       name: 'products', //required
 //       apiUrl:'/products', //required,
+//       itemsField: 'products',
 //       paginationExtraFields: ['filters', 'categories', 'priceRange'],
 //       paginationKey: 'query',
 //       manual: undefined

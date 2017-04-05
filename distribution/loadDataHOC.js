@@ -75,7 +75,7 @@ var multiple = exports.multiple = function multiple(entity, dataRetriever) {
       }, {
         key: 'render',
         value: function render() {
-          return React.createElement(WrappedComponent, this.props);
+          return _react2.default.createElement(WrappedComponent, this.props);
         }
       }]);
 
@@ -142,7 +142,7 @@ var single = exports.single = function single(entity, idRetriever) {
       }, {
         key: 'render',
         value: function render() {
-          return React.createElement(WrappedComponent, this.props);
+          return _react2.default.createElement(WrappedComponent, this.props);
         }
       }]);
 
