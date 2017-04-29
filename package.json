@@ -5,7 +5,8 @@
   "main": "distribution/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src --out-dir distribution"
+    "build-thunk": "babel src/thunk --out-dir distribution-thunk/thunk && babel src/shared --out-dir distribution-thunk/shared",
+    "build-saga": "babel src/saga --out-dir distribution-saga/saga && babel src/shared --out-dir distribution-saga/shared"
   },
   "repository": {
     "type": "git",
@@ -27,16 +28,19 @@
     "url": "https://github.com/saltas888/redux-relax/issues"
   },
   "dependencies": {
-    "i": "^0.3.5",
+    "humps": ">=2.0.0",
+    "i": ">=0.3.5",
     "lodash": ">=4.0.0",
-    "normalizr": ">=2.0.0",
     "pluralize": ">=1.0.0",
     "react": ">=15.1.0",
     "react-redux": ">=4.0.0",
     "redux": ">=3.0.0",
-    "redux-logger": ">=2.0.0",
+    "normalizr": ">=3.0.0",
+    "redux-logger": ">=3.0.0",
     "redux-saga": ">=0.10.0",
-    "updeep": ">=0.12.0"
+    "redux-thunk": ">=2.1.0",
+    "updeep": ">=0.12.0",
+    "yup": "^0.21.3"
   },
   "homepage": "https://github.com/saltas888/redux-relax#readme",
   "devDependencies": {
