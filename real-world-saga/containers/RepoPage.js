@@ -49,7 +49,7 @@ class RepoPage extends Component {
   }
 
   render() {
-    const { repo, owner, name } = this.props
+    const { repo, owner, name, pageCount } = this.props
     if (!repo || !owner) {
       return <h1><i>Loading {name} details...</i></h1>
     }
@@ -62,6 +62,7 @@ class RepoPage extends Component {
         <hr />
         <List renderItem={this.renderUser}
               items={users}
+              pageCount={pageCount}
               onLoadMoreClick={this.handleLoadMoreClick}
               loadingLabel={`Loading stargazers of ${name}...`}
               isFetching={isFetching}

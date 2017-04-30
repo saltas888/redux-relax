@@ -20,12 +20,13 @@
   ---------------------------------------------------------------
 ***/
 
+// LOAD MORE FIX
+
+// REAL WORLD SAGA EXAMPLE SEARCH FIELD BUG
+
 // SERVER SIDE RENDERING
 
 // HANDLE INITIALLIZATION ERROR & GENERAL ERROR HANDLING 
-
-// FIX BUG `react is not defined` WHILE BUILDING DIST
-
 
 
 
