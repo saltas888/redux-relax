@@ -1,6 +1,6 @@
 {
-  "name": "redux-relax",
-  "version": "1.0.6",
+  "name": "redux-relax-thunk",
+  "version": "1.0.0",
   "description": "Easy load & paginate data",
   "main": "distribution-thunk/thunk/index.thunk.js",
   "scripts": {
