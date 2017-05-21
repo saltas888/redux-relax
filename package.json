@@ -2,7 +2,7 @@
   "name": "redux-relax",
   "version": "1.0.6",
   "description": "Easy load & paginate data",
-  "main": "distribution/index.js",
+  "main": "distribution-thunk/thunk/index.thunk.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-thunk": "babel src/thunk --out-dir distribution-thunk/thunk && babel src/shared --out-dir distribution-thunk/shared",
