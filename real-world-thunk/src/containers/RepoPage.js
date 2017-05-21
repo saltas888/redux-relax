@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import {single, multiple} from '../../../distribution-thunk/thunk/loadDataHOC'
+import {single, multiple} from '../distribution-thunk/thunk/loadDataHOC'
 import get from 'lodash/get'
 
 import Repo from '../components/Repo'

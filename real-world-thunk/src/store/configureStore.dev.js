@@ -4,12 +4,12 @@ import { createLogger } from 'redux-logger'
 import api from '../middleware/api'
 import rootReducer from '../reducers'
 import DevTools from '../containers/DevTools'
-import ReduxRelaxEnchancer from '../../../distribution-thunk/thunk/index.thunk'
+import ReduxRelaxEnchancer from '../distribution-thunk/thunk/index.thunk'
 
 const configs = {
   dev: true,
   apiEndpoint: 'https://api.github.com/',//required
-  getHeaders: ()=>({}),
+  getHeaders: () => ({}),
   reducers:{
     paginate:{
       totalPageCountField: 'pages', //required
@@ -30,7 +30,7 @@ const configs = {
     {
       uniqueIdAttribute: 'fullName', //required
       name: 'repos', //required
-      singleApiUrl: fullName=> `repos/${fullName}`,
+      singleApiUrl: fullName => `repos/${fullName}`,
       apiUrl: login => `users/${login}/starred`, //required,
       paginationExtraFields: undefined,
       paginationKey: 'fullName',

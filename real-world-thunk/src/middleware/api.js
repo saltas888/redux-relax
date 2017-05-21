@@ -1,4 +1,4 @@
-import { normalize, Schema } from 'normalizr'
+import { normalize, schema } from 'normalizr'
 import { camelizeKeys } from 'humps'
 
 // Extracts the next page URL from Github API response.
@@ -54,11 +54,11 @@ const callApi = (endpoint, schema) => {
 // leading to a frozen UI as it wouldn't find "someuser" in the entities.
 // That's why we're forcing lower cases down there.
 
-const userSchema = new Schema('users', {}, {
+const userSchema = new schema.Entity('users', {}, {
   idAttribute: user => user.login.toLowerCase()
 })
 
-const repoSchema = new Schema('repos', {
+const repoSchema = new schema.Entity('repos', {
   owner: userSchema
 }, {
   idAttribute: repo => repo.fullName.toLowerCase()
@@ -67,9 +67,9 @@ const repoSchema = new Schema('repos', {
 // Schemas for Github API responses.
 export const Schemas = {
   USER: userSchema,
-  USER_ARRAY: [userSchema],
+  USER_ARRAY: new schema.Array(userSchema),
   REPO: repoSchema,
-  REPO_ARRAY: [repoSchema]
+  REPO_ARRAY: new schema.Array(repoSchema)
 }
 
 // Action key that carries API call info interpreted by this Redux middleware.

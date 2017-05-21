@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import zip from 'lodash/zip'
-import {single, multiple} from '../../../distribution-thunk/thunk/loadDataHOC'
+import {single, multiple} from '../distribution-thunk/thunk/loadDataHOC'
 import User from '../components/User'
 import Repo from '../components/Repo'
 import List from '../components/List'
