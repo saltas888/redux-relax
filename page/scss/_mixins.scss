@@ -64,6 +64,13 @@
   -o-background-size: cover;
 }
 
+@mixin background-contain {
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  background-size: contain;
+  -o-background-size: contain;
+}
+
 // Font Mixins
 
 @mixin serif-font {

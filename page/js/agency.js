@@ -29,5 +29,19 @@
             top: 100
         }
     })
+    
+    // typewriter
+    var app = document.getElementById('intro-typewriter');
+
+    var typewriter = new Typewriter(app, {
+        typingSpeed: 50,
+        deleteSpeed: 18,
+    });
+
+    typewriter.typeString('Fetching data, writing actions, reducers, normalizr, reselect boilerplate?')
+        .pauseFor(1500)
+        .deleteAll()
+        .typeString('Relax & let us handle it!')
+        .start();
 
 })(jQuery); // End of use strict

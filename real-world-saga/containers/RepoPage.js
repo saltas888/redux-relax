@@ -20,6 +20,7 @@ function getSearchUrl(state){
   const { login, name } = state.router.params
   return `${login}/${name}`
 })
+
 class RepoPage extends Component {
   constructor(props) {
     super(props)

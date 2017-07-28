@@ -24,7 +24,6 @@ const configs = {
       apiUrl: login => `repos/${login}/stargazers`, //required,
       paginationExtraFields: undefined,
       paginationKey: 'login',
-      manual: undefined
     },
     {
       uniqueIdAttribute: 'fullName', //required
@@ -33,24 +32,23 @@ const configs = {
       apiUrl: login => `users/${login}/starred`, //required,
       paginationExtraFields: undefined,
       paginationKey: 'fullName',
-      manual: undefined
     },
   ]
 }
 
 
-  const store = createStore(
-    rootReducer,
-    {},
-    ReduxRelaxEnchancer(configs, DevTools.instrument()),
-  )
+const store = createStore(
+  rootReducer,
+  {},
+  ReduxRelaxEnchancer(configs, DevTools.instrument()),
+)
 
-  if (module.hot) {
-    // Enable Webpack hot module replacement for reducers
-    module.hot.accept('../reducers', () => {
-      const nextRootReducer = require('../reducers').default
-      store.replaceReducer(nextRootReducer)
-    })
-  }
-  
-  export default store
+if (module.hot) {
+  // Enable Webpack hot module replacement for reducers
+  module.hot.accept('../reducers', () => {
+    const nextRootReducer = require('../reducers').default
+    store.replaceReducer(nextRootReducer)
+  })
+}
+
+export default store

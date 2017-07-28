@@ -4,7 +4,7 @@ import { createLogger } from 'redux-logger'
 import api from '../middleware/api'
 import rootReducer from '../reducers'
 import DevTools from '../containers/DevTools'
-import ReduxRelaxEnchancer from '../distribution-thunk/thunk/index.thunk'
+import ReduxRelaxEnchancer from '../../../distribution-thunk/thunk/index.thunk'
 
 const configs = {
   dev: true,
@@ -25,7 +25,6 @@ const configs = {
       apiUrl: login => `repos/${login}/stargazers`, //required,
       paginationExtraFields: undefined,
       paginationKey: 'login',
-      manual: undefined
     },
     {
       uniqueIdAttribute: 'fullName', //required
@@ -34,14 +33,13 @@ const configs = {
       apiUrl: login => `users/${login}/starred`, //required,
       paginationExtraFields: undefined,
       paginationKey: 'fullName',
-      manual: undefined
     },
   ]
 }
 
 
-export default s => createStore(
+export default initialState => createStore(
   rootReducer,
-  s || {},
+  initialState || {},
   ReduxRelaxEnchancer(configs, DevTools.instrument(), [api]),
 )

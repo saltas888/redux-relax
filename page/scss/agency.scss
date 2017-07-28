@@ -167,11 +167,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 header {
-    background-image: url('../img/header-bg.jpg');
+    height: 100vh;
+    background-image: url('../img/header-bg.png');
     background-repeat: no-repeat;
     background-attachment: scroll;
     background-position: center center;
-    @include background-cover;
+    background-color: rgba(0,0,0,0.2);
+    @include background-contain;
     text-align: center;
     color: white;
     .intro-text {
@@ -179,7 +181,7 @@ header {
         padding-bottom: 50px;
         .intro-lead-in {
             @include serif-font;
-            font-style: italic;
+            font-weight: 600;
             font-size: 22px;
             line-height: 22px;
             margin-bottom: 25px;
@@ -197,11 +199,11 @@ header {
 @media(min-width:768px) {
     header {
         .intro-text {
-            padding-top: 300px;
+            padding-top: 435px;
             padding-bottom: 200px;
             .intro-lead-in {
                 @include serif-font;
-                font-style: italic;
+                font-weight: 600;
                 font-size: 40px;
                 line-height: 40px;
                 margin-bottom: 25px;
@@ -214,6 +216,11 @@ header {
                 margin-bottom: 50px;
             }
         }
+        #intro-typewriter {
+            font-weight: 400;
+            font-size: 25px;
+            margin-bottom: 50px;
+        }
     }
 }
 
@@ -224,7 +231,7 @@ section {
     h2.section-heading {
         font-size: 40px;
         margin-top: 0;
-        margin-bottom: 15px;
+        margin-bottom: 75px;
     }
     h3.section-subheading {
         font-size: 16px;
