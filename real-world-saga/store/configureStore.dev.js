@@ -1,6 +1,4 @@
-import { createStore, applyMiddleware, compose } from 'redux'
-import createLogger from 'redux-logger'
-import createSagaMiddleware, { END } from 'redux-saga'
+import { createStore } from 'redux'
 import DevTools from '../containers/DevTools'
 import rootReducer from '../reducers'
 import ReduxRelaxEnchancer from '../../distribution-saga/saga/index'
@@ -8,14 +6,14 @@ import ReduxRelaxEnchancer from '../../distribution-saga/saga/index'
 const configs = {
   dev: true,
   apiEndpoint: 'https://api.github.com/',//required
-  reducers:{
-    paginate:{
+  reducers: {
+    paginate: {
       totalPageCountField: 'pages', //required
       totalCountField: 'totalCount', //required
       currentPageField: undefined //optional
     },
   },
-  getHeaders: ()=>({}),
+  getHeaders: (state) => ({ }),
   entities:[
     {
       uniqueIdAttribute: 'login', //required
@@ -24,8 +22,7 @@ const configs = {
       apiUrl: login => `repos/${login}/stargazers`, //required,
       paginationExtraFields: undefined,
       paginationKey: 'login',
-    },
-    {
+    }, {
       uniqueIdAttribute: 'fullName', //required
       name: 'repos', //required
       singleApiUrl: fullName=> `repos/${fullName}`,
@@ -40,7 +37,7 @@ const configs = {
 const store = createStore(
   rootReducer,
   {},
-  ReduxRelaxEnchancer(configs, DevTools.instrument()),
+  ReduxRelaxEnchancer(configs, [DevTools.instrument()]),
 )
 
 if (module.hot) {

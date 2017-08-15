@@ -1,17 +1,15 @@
-import { createStore, applyMiddleware, compose } from 'redux'
-import thunk from 'redux-thunk'
-import { createLogger } from 'redux-logger'
+import { createStore } from 'redux'
 import api from '../middleware/api'
 import rootReducer from '../reducers'
 import DevTools from '../containers/DevTools'
-import ReduxRelaxEnchancer from '../../../distribution-thunk/thunk/index.thunk'
+import ReduxRelaxEnchancer from '../../../distribution-thunk/thunk/index'
 
 const configs = {
   dev: true,
   apiEndpoint: 'https://api.github.com/',//required
-  getHeaders: () => ({}),
-  reducers:{
-    paginate:{
+  getHeaders: () => ({ }),
+  reducers: {
+    paginate: {
       totalPageCountField: 'pages', //required
       totalCountField: 'totalCount', //required
       currentPageField: undefined //optional
@@ -25,8 +23,7 @@ const configs = {
       apiUrl: login => `repos/${login}/stargazers`, //required,
       paginationExtraFields: undefined,
       paginationKey: 'login',
-    },
-    {
+    }, {
       uniqueIdAttribute: 'fullName', //required
       name: 'repos', //required
       singleApiUrl: fullName => `repos/${fullName}`,
@@ -41,5 +38,5 @@ const configs = {
 export default initialState => createStore(
   rootReducer,
   initialState || {},
-  ReduxRelaxEnchancer(configs, DevTools.instrument(), [api]),
+  ReduxRelaxEnchancer(configs, [DevTools.instrument()], [api]),
 )

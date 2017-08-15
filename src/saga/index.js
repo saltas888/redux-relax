@@ -14,14 +14,14 @@ export const Core = ReduxRelaxCore;
 export const Utils = utils;
 
 
-export default (configs, devTools, propsMiddlewares = []) => {
+export default (configs, enhancers = [], propsMiddlewares = []) => {
   configs && Data.reinitialize(configs)
   return (next) => 
     (reducer, initialState) => {
       const sagaMiddleware = createSagaMiddleware()
       const middlewares = configs.dev ? [sagaMiddleware, ...propsMiddlewares, createLogger()] : [sagaMiddleware, ...propsMiddlewares]
-      const enhancer = configs.dev ? compose(applyMiddleware(...middlewares), devTools) : applyMiddleware(...middlewares)
-      const store = next(initializeReducers(reducer), initialState, compose(applyMiddleware(...middlewares), devTools));
+      const baseEnhancer = configs.dev ? compose(applyMiddleware(...middlewares), ...enhancers) : applyMiddleware(...middlewares)
+      const store = next(initializeReducers(reducer), initialState, compose(applyMiddleware(...middlewares), baseEnhancer));
 
       store.runSaga = sagaMiddleware.run
       store.close = () => store.dispatch(END)
