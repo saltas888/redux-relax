@@ -16,18 +16,16 @@ const configs = {
   getHeaders: (state) => ({ }),
   entities:[
     {
-      uniqueIdAttribute: 'login', //required
-      name: 'users', //required
-      singleApiUrl: login => `users/${login.toString()}`,
-      apiUrl: login => `repos/${login}/stargazers`, //required,
-      paginationExtraFields: undefined,
+      uniqueIdAttribute: 'login',// The field that is used as unique id - Required
+      name: 'users', // Name of the entities field in state- Required
+      singleApiUrl: login => `users/${login.toString()}`, // The route to base endpoint to get a single entity - Required,
+      apiUrl: login => `repos/${login}/stargazers`, // The route to base endpoint to get multiple entities - Required,
       paginationKey: 'login',
     }, {
       uniqueIdAttribute: 'fullName', //required
       name: 'repos', //required
       singleApiUrl: fullName=> `repos/${fullName}`,
       apiUrl: login => `users/${login}/starred`, //required,
-      paginationExtraFields: undefined,
       paginationKey: 'fullName',
     },
   ]
