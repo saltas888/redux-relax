@@ -23,7 +23,6 @@ exports.default = {
     //   apiUrl:'/', //required,
     //   paginationExtraFields:undefined,
     //   paginationKey: 'query',
-    //   manual: undefined
     // }
   ]
 };

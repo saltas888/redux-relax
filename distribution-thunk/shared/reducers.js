@@ -14,6 +14,10 @@ var _isFunction = require('lodash/isFunction');
 
 var _isFunction2 = _interopRequireDefault(_isFunction);
 
+var _get = require('lodash/get');
+
+var _get2 = _interopRequireDefault(_get);
+
 var _redux = require('redux');
 
 var _paginate = require('./paginate');
@@ -52,7 +56,7 @@ exports.default = function (entitiesData) {
       extraFields: entity.paginationExtraFields,
       itemsField: entity.itemsField,
       mapActionToKey: function mapActionToKey(action) {
-        return entity.paginationKey ? action[entity.paginationKey] : 'default';
+        return (0, _get2.default)(action, entity.paginationKey, 'default');
       },
       types: {
         requestTypes: [Action.REQUEST],
