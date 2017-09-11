@@ -7,13 +7,11 @@ import User from '../components/User'
 import Repo from '../components/Repo'
 import List from '../components/List'
 
-function getSearchUrl(state){
 
-  const { login } = state.router.params
-  return {search:login}
-}
-
-@multiple('repos', getSearchUrl)
+@multiple('repos', (state, ownProps) => {
+  const { login } = state.router.params;
+  return { search: login};
+})
 @single('users', (state, ownProps) => {
   const { login } = state.router.params
   return login

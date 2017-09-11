@@ -12,21 +12,30 @@
 
 // CREATE EXAMPLES - ATTACH TO SAGAS REAL WORLD EXAMPLE ---DONE
 
-/***
-  ---------------------------------------------------------------
-***/
+
+// LOAD MORE FIX --DONE
+
+// REAL WORLD SAGA EXAMPLE SEARCH FIELD BUG --DONE
+
+// HANDLE INITIALLIZATION ERROR & GENERAL ERROR HANDLING --DONE
 
 /***
   ---------------------------------------------------------------
 ***/
 
-// LOAD MORE FIX
+/***
+  ---------------------------------------------------------------
+***/
 
-// REAL WORLD SAGA EXAMPLE SEARCH FIELD BUG
+// REMOVE DUPLICATES IN SAGAS EXAMPLE
+
+// ADVANCED USAGE
+
+// TEST EXAMPLES WITH PUBLISHED MODULES
 
 // SERVER SIDE RENDERING
 
-// HANDLE INITIALLIZATION ERROR & GENERAL ERROR HANDLING 
+
 
 
 

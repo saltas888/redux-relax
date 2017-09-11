@@ -5,8 +5,9 @@
   "main": "distribution-thunk/thunk/index.thunk.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-thunk": "babel src/thunk --out-dir distribution-thunk/thunk && babel src/shared --out-dir distribution-thunk/shared",
-    "build-saga": "babel src/saga --out-dir distribution-saga/saga && babel src/shared --out-dir distribution-saga/shared"
+    "build-thunk": "rm -rf distribution-thunk && babel src/thunk --out-dir distribution-thunk/thunk && babel src/shared --out-dir distribution-thunk/shared",
+    "build-saga": "rm -rf distribution-saga && babel src/saga --out-dir distribution-saga/saga && babel src/shared --out-dir distribution-saga/shared",
+    "build": "npm run build-thunk && npm run build-saga"
   },
   "repository": {
     "type": "git",
