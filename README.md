@@ -1,4 +1,9 @@
-## Welcome to GitHub Pages
+
+
+## Redux-Relax
+
+[![build status](https://img.shields.io/travis/saltas888/redux-relax/master.svg?style=flat-square)](https://travis-ci.org/saltas888/redux-relax)
+[![npm version](https://img.shields.io/npm/v/redux-relax.svg?style=flat-square)](https://www.npmjs.com/package/redux-relax-thunk)
 
 You can use the [editor on GitHub](https://github.com/saltas888/redux-relax/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
