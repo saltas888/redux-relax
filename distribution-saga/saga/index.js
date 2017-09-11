@@ -46,7 +46,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var Core = exports.Core = ReduxRelaxCore;
 var Utils = exports.Utils = utils;
 
-exports.default = function (configs, devTools) {
+exports.default = function (configs) {
+  var enhancers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
   var propsMiddlewares = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
   configs && _data2.default.reinitialize(configs);
@@ -54,8 +55,8 @@ exports.default = function (configs, devTools) {
     return function (reducer, initialState) {
       var sagaMiddleware = (0, _reduxSaga2.default)();
       var middlewares = configs.dev ? [sagaMiddleware].concat(_toConsumableArray(propsMiddlewares), [(0, _reduxLogger.createLogger)()]) : [sagaMiddleware].concat(_toConsumableArray(propsMiddlewares));
-      var enhancer = configs.dev ? (0, _redux.compose)(_redux.applyMiddleware.apply(undefined, _toConsumableArray(middlewares)), devTools) : _redux.applyMiddleware.apply(undefined, _toConsumableArray(middlewares));
-      var store = next(initializeReducers(reducer), initialState, (0, _redux.compose)(_redux.applyMiddleware.apply(undefined, _toConsumableArray(middlewares)), devTools));
+      var baseEnhancer = configs.dev ? _redux.compose.apply(undefined, [_redux.applyMiddleware.apply(undefined, _toConsumableArray(middlewares))].concat(_toConsumableArray(enhancers))) : _redux.applyMiddleware.apply(undefined, _toConsumableArray(middlewares));
+      var store = next(initializeReducers(reducer), initialState, (0, _redux.compose)(_redux.applyMiddleware.apply(undefined, _toConsumableArray(middlewares)), baseEnhancer));
 
       store.runSaga = sagaMiddleware.run;
       store.close = function () {
