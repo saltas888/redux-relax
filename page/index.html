@@ -150,29 +150,21 @@
                 </div>
             </div>
             <div class="row text-center">
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fa fa-bath fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">Easy to use</h4>
-                    <p class="text-muted">You have to add your initial configurations and then you just ask what you need from the data store.</p>
+                <div class="col-lg-6">
+                    <h3 class="section-subheading text-muted">Saga </h3>
+                    <div class="row">
+                        From <a href="https://github.com/redux-saga/redux-saga/blob/master/examples/real-world/sagas/index.js" target="_blank"> <strong>130lines</strong> </a>
+                        to ~> <a href="https://github.com/saltas888/redux-relax/blob/saga/real-world-saga/sagas/index.js" target="_blank"> <strong>23lines</strong> </a> 
+                    </div>
+                    <div class="row">
+                        From <a href="https://github.com/redux-saga/redux-saga/blob/master/examples/real-world/actions/index.js" target="_blank"> 63lines </a>
+                        to ~> <a href="https://github.com/saltas888/redux-relax/blob/saga/real-world-saga/sagas/index.js" target="_blank"> 15lines </a> 
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fa fa-refresh fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">Efficiency & Consistency</h4>
-                    <p class="text-muted">This library fetch and stores your data on reducers normalized, keeping your data updated & consistent, avoiding duplicate entities.</p>
-                </div>
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">Customization</h4>
-                    <p class="text-muted">You can always add custom logic on reducers or on sagas middleware.</p>
+                <div class="col-lg-6">
+                    <h3 class="section-subheading text-muted">Thunk </h3>
+                    From <a href="https://github.com/redux-saga/redux-saga/blob/master/examples/real-world/sagas/index.js" target="_blank"> 130lines </a>
+                    to ~> <a href="https://github.com/saltas888/redux-relax/blob/saga/real-world-saga/sagas/index.js" target="_blank"> 23lines </a> 
                 </div>
             </div>
         </div>
@@ -189,7 +181,9 @@
             </div>
             <div class="row">
                 <div class="col-lg-12">
-                    <h3 class="section-subheading text-muted">If you use <a href="https://github.com/redux-saga/redux-saga" target="_blank"> redux-saga </a></h3>
+                    <h3 class="section-subheading text-muted">If you use 
+                        <a href="https://github.com/redux-saga/redux-saga" target="_blank"> redux-saga </a> 
+                    </h3>
                     <pre><code class="bash">
                         npm i --save redux-relax-saga    
                     </code></pre>
@@ -203,14 +197,15 @@
                 <div class="col-lg-12">
                     <h3 class="section-subheading text-muted">Setting up </h3>
                     <pre><code class="javascript">
-                        import { createStore } from 'redux'
-                        import DevTools from '../containers/DevTools'
-                        import rootReducer from '../reducers'
-                        import ReduxRelaxEnchancer from '../../distribution-saga/saga/index'
+                        import { createStore } from 'redux';
+                        import DevTools from '../containers/DevTools';
+                        import rootReducer from '../reducers';
+                        import ReduxRelaxEnchancer from 'redux-relax-thunk';
 
                         const configs = {
                           dev: true,
                           apiEndpoint: 'https://api.github.com/',//required
+                          getHeaders: (state) => ({ }),
                           reducers: {
                             paginate: {
                               totalPageCountField: 'pages', //required
@@ -218,21 +213,20 @@
                               currentPageField: undefined //optional
                             },
                           },
-                          getHeaders: () => ({ }),
                           entities: [
                             {
-                              uniqueIdAttribute: 'login', //required
-                              name: 'users', //required
-                              singleApiUrl: login => `users/${login.toString()}`,
-                              apiUrl: login => `repos/${login}/stargazers`, //required,
-                              paginationExtraFields: undefined,
+                              uniqueIdAttribute: 'login', // The field that is used as unique id - Required
+                              name: 'users', // Name of the entities field in state- Required
+                              itemsField: 'items', // the field on response payload that includes our data
+                              singleApiUrl: login => `users/${login.toString()}` // The route to base endpoint to fetch a single entity - Required,
+                              apiUrl: login => `repos/${login}/stargazers`, // The route to base endpoint to fetch multiple entities - Required,
                               paginationKey: 'login',
                             }, {
-                              uniqueIdAttribute: 'fullName', //required
-                              name: 'repos', //required
-                              singleApiUrl: fullName=> `repos/${fullName}`,
-                              apiUrl: login => `users/${login}/starred`, //required,
-                              paginationExtraFields: undefined,
+                              uniqueIdAttribute: 'fullName',
+                              name: 'repos',
+                              itemsField: 'items',
+                              singleApiUrl: fullName => `repos/${fullName}`,
+                              apiUrl: login => `users/${login}/starred`,
                               paginationKey: 'fullName',
                             },
                           ]

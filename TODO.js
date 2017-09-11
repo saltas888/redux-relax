@@ -27,7 +27,9 @@
   ---------------------------------------------------------------
 ***/
 
-// MAKE DEV TOOLS OPTIONAL
+// REMOVE DUPLICATES IN SAGAS EXAMPLE
+
+// ADVANCED USAGE
 
 // TEST EXAMPLES WITH PUBLISHED MODULES
 

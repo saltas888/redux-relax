@@ -1,5 +1,6 @@
 import updeep from 'updeep'
 import isFunction from 'lodash/isFunction'
+import get from 'lodash/get'
 import { combineReducers } from 'redux'
 import paginate from './paginate'
 import { getActionTypes } from './utils'
@@ -29,7 +30,7 @@ export default (entitiesData) =>{
           entity: entity.name,
           extraFields: entity.paginationExtraFields,
           itemsField: entity.itemsField,
-          mapActionToKey: action => entity.paginationKey ? action[entity.paginationKey] : 'default',
+          mapActionToKey: action => get(action, entity.paginationKey, 'default'),
           types: {
             requestTypes: [Action.REQUEST],
             successTypes: [Action.SUCCESS],
